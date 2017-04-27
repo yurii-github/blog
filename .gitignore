@@ -1,0 +1,9 @@
+/vendor
+/logs
+/var
+/.idea
+/composer.lock
+/web/sitemap.xml
+/tests/reports
+/web/sitemap_test.xml
+/app/config/config.yml

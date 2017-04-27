@@ -1,0 +1,35 @@
+
+parameters:
+    meta:
+         title: ''
+         generator: ''
+         keywords: ''
+         description: ''
+         author: ''
+         slogan: ''
+    #
+    web_dir: '%kernel.root_dir%/../web'
+    logs_dir: '%kernel.root_dir%/../logs'
+    sitemap_filename: '%web_dir%/sitemap.xml'
+
+framework:
+    secret: S0ME_SECRET
+    templating:
+        engines: ['twig']
+    profiler: { only_exceptions: false }
+
+services:
+    app.mytwig_extension_helper:
+        class: 'App\Twig\TwigExtension'
+        public: false
+        tags:
+            - { name: 'twig.extension' }
+    app.sitemap:
+        class: 'App\Sitemap'
+        public: true
+        arguments: ['%sitemap_filename%', '%logs_dir%', '@request_stack']
+
+twig:
+    globals:
+        web_dir: %web_dir%
+        meta: '%meta%'

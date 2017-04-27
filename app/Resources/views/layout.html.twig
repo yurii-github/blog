@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="generator" content="{{ meta.generator }}" />
+    <meta name="keywords" content="{{ meta.keywords }}" />
+    <meta name="author" content="{{ meta.author }}" />
+    <meta name="description" content="{{ meta.description }}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{{ meta.title }}{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{{ url('index') }}/favi.png" />
+    {{ [web_dir~'/style.css', 'https://fonts.googleapis.com/css?family=Open+Sans']|inline(4) }}
+</head>
+<body>
+<header>
+    <a href="{{ url('index') }}">{{ meta.slogan }}</a>
+</header>
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
+</body>
+{% block extra %}{% endblock %}
+</html>

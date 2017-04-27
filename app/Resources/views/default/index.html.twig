@@ -1,0 +1,9 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+<nav>
+    {% for k, log in logs %}
+    <a href="{{ log.loc }}"><time>{{ log.date }}</time>{{ log.title }}</a>
+    {% endfor %}
+</nav>
+{% endblock %}

@@ -1,0 +1,12 @@
+{
+    "require": {
+        "symfony/symfony": "^3.2",
+        "sensio/framework-extra-bundle": "^3.0",
+        "symfony/var-dumper": "^3.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        }
+    }
+}

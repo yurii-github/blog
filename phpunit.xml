@@ -1,0 +1,40 @@
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/6.1/phpunit.xsd"
+        colors="true"
+        bootstrap="tests/bootstrap.php"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        forceCoversAnnotation="false"
+        processIsolation="false"
+        stopOnError="false"
+        stopOnFailure="false"
+        stopOnIncomplete="false"
+        stopOnSkipped="false"
+        stopOnRisky="false"
+        timeoutForSmallTests="1"
+        timeoutForMediumTests="10"
+        timeoutForLargeTests="60"
+        verbose="false"
+>
+
+    <testsuite name="blog">
+        <directory>tests</directory>
+        <exclude>_data</exclude>
+    </testsuite>
+
+    <php>
+        <server name="KERNEL_DIR" value="app" />
+    </php>
+   <!--
+    <logging>
+        <log target="tests/reports" type="coverage-html"/>
+    </logging>
+-->
+    <filter>
+        <whitelist>
+            <directory>src</directory>
+        </whitelist>
+    </filter>
+</phpunit>

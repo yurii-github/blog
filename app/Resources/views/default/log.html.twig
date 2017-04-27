@@ -1,0 +1,11 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}{{ log.title }}{% endblock %}
+{% block content %}
+<!-- generated:article: {{ now|date('Y-m-d H:i:s') }} -->
+    <article>
+        <h1>{{ log.title }}</h1>
+        {{ log.content |nl2brpad(8) }}
+        <time>{{ log.date }}</time>
+    </article>
+{% endblock %}
