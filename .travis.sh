@@ -8,7 +8,12 @@ function install()
 
 		phpunit*)
 			echo -e "${color}getting latest PHPUnit..."
-			wget https://phar.phpunit.de/phpunit-6.1.phar -O vendor/phpunit.phar --no-check-certificate
+            if [ "${TRAVIS_PHP_VERSION:0:3}" == "5.6" ]
+            then
+                wget https://phar.phpunit.de/phpunit-5.7.phar -O vendor/phpunit.phar --no-check-certificate
+            else
+                wget https://phar.phpunit.de/phpunit-6.1.phar -O vendor/phpunit.phar --no-check-certificate
+            fi
 			;;
 
 		deps*)
