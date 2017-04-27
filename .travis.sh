@@ -13,6 +13,7 @@ function install()
 
 		deps*)
 		    echo -e "${color}downloading required dependencies...";
+		    composer require codeclimate/php-test-reporter --no-update
 		    composer install --prefer-dist --optimize-autoloader --no-dev --no-progress
 			echo -e "${color}show installed dependencies:";
 			composer show --installed
@@ -46,7 +47,6 @@ then
 
 		echo -e "${color}DEBUG: show vendor dir. IT will be cached";
 		ls vendor -l
-
 	fi
 
 	exit $?
@@ -59,7 +59,7 @@ fi
 if [ "$1" == "script" ]
 then
 	# if php7.1 use clover
-	if [ "${TRAVIS_PHP_VERSION:0:3}" == "7.1" ] && [ "${DB_TYPE}" == "sqlite" ]
+	if [ "${TRAVIS_PHP_VERSION:0:3}" == "7.1" ]
 	then
 		php vendor/phpunit.phar $CLOVER
 	else
