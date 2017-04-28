@@ -8,13 +8,8 @@ function install()
 
 		phpunit*)
 			echo -e "${color}getting latest PHPUnit..."
-            if [ "${TRAVIS_PHP_VERSION:0:3}" == "5.6" ]
-            then
-                wget https://phar.phpunit.de/phpunit-5.7.phar -O vendor/phpunit.phar --no-check-certificate
-            else
-                wget https://phar.phpunit.de/phpunit-6.1.phar -O vendor/phpunit.phar --no-check-certificate
-            fi
-			;;
+            wget https://phar.phpunit.de/phpunit-6.1.phar -O vendor/phpunit.phar --no-check-certificate
+            ;;
 
 		climate*)
 			echo -e "${color}getting latest code climate reporter..."
@@ -72,7 +67,7 @@ then
 	# if php7.0 use clover
 	if [ "${TRAVIS_PHP_VERSION:0:3}" == "7.0" ]
 	then
-		php vendor/phpunit.phar --coverage-clover clover.xml"; fi
+		php vendor/phpunit.phar --coverage-clover clover.xml"
 	else
 		php vendor/phpunit.phar
 	fi
@@ -87,11 +82,11 @@ fi
 if [ "$1" == "after_success" ]
 then
 	# if php7.0 use clover
-	if [ "${TRAVIS_PHP_VERSION:0:3}" == "7.0" ] && [ -n "$CLOVER" ]
+	if [ "${TRAVIS_PHP_VERSION:0:3}" == "7.0" ]
 	then
 		vendor/bin/test-reporter clover.xml
 	else
-		echo -e "${color}skipping codeclimate reporter";
+		echo -e "${color}skipping codeclimate reporter"
 	fi
 
 	exit $?
