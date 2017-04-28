@@ -67,7 +67,7 @@ then
 	# if php7.0 use clover
 	if [ "${TRAVIS_PHP_VERSION:0:3}" == "7.0" ]
 	then
-		php vendor/phpunit.phar --coverage-clover clover.xml"
+		php vendor/phpunit.phar --coverage-clover clover.xml
 	else
 		php vendor/phpunit.phar
 	fi
