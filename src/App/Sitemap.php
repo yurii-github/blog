@@ -1,4 +1,5 @@
 <?php
+
 namespace App;
 
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -18,9 +19,8 @@ class Sitemap
         $this->logsDir = $logsDir;
     }
 
-
     /**
-     * generates sitemap based on all logs available in logs directory
+     * generates sitemap based on all logs available in logs directory.
      *
      * @return string generated sitemap (http://www.sitemaps.org/protocol.html)
      */
@@ -32,14 +32,14 @@ class Sitemap
             if ($fi->isFile()) {
                 $logFilename = $fi->getFilename();
                 $log = $this->loadLog($fi->getPathname());
-                $logLinkTitle = str_replace(['(',')',' ','\\','/',':','*','?','"','<','>','|','+'], '-', $log->title);
+                $logLinkTitle = str_replace(['(', ')', ' ', '\\', '/', ':', '*', '?', '"', '<', '>', '|', '+'], '-', $log->title);
                 $logDate = $log->date->format('Y-m-d');
                 $url = $xml->addChild('url');
                 // attributes are used by our blog app, not needed for sitemap
                 $url->addAttribute('date', $logDate);
                 $url->addAttribute('title', $log->title);
                 $url->addAttribute('file', $logFilename);
-                $url->loc = $this->request_stack->getCurrentRequest()->getSchemeAndHttpHost().$this->request_stack->getCurrentRequest()->getBaseUrl() . "/$logDate/$logLinkTitle";
+                $url->loc = $this->request_stack->getCurrentRequest()->getSchemeAndHttpHost().$this->request_stack->getCurrentRequest()->getBaseUrl()."/$logDate/$logLinkTitle";
                 $url->lastmod = date('Y-m-d', $fi->getMTime());
                 $url->changefreq = 'never'; // always | hourly | daily | weekly | monthly | yearly | never
                 $url->priority = 0.5; // 0.0 to 1.0
@@ -49,6 +49,7 @@ class Sitemap
         // beautify
         $dom = dom_import_simplexml($xml)->ownerDocument;
         $dom->formatOutput = true;
+
         return $dom->saveXML();
     }
 
@@ -56,7 +57,6 @@ class Sitemap
     {
         return $this->sitemap_filename;
     }
-
 
     public function loadLog($filename)
     {
@@ -91,17 +91,16 @@ class Sitemap
                 continue;
             }
             $log = $this->loadLog($filename);
-            $logs[(string)$child->loc] = $log;
+            $logs[(string) $child->loc] = $log;
         }
 
         // apply DESC sorting
         uasort($logs, function ($first, $second) {
-            return $first->date > $second->date ? - 1 : 1;
+            return $first->date > $second->date ? -1 : 1;
         });
 
         return $logs;
     }
-
 
     public function getLogByLoc(string $loc)
     {
@@ -109,6 +108,7 @@ class Sitemap
         if (!@$logs[$loc]) {
             throw new NotFoundHttpException("Log record was not found: $loc");
         }
+
         return $logs[$loc];
     }
 }

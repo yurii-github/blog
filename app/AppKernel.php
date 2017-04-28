@@ -1,4 +1,5 @@
 <?php
+
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -61,7 +62,8 @@ class AppKernel extends Kernel
     }
 
     /**
-     * optional, to use the standard Symfony cache directory
+     * optional, to use the standard Symfony cache directory.
+     *
      * @return string
      */
     public function getCacheDir()
@@ -70,7 +72,8 @@ class AppKernel extends Kernel
     }
 
     /**
-     * optional, to use the standard Symfony logs directory
+     * optional, to use the standard Symfony logs directory.
+     *
      * @return string
      */
     public function getLogDir()

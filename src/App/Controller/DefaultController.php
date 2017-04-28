@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Log;
@@ -6,7 +7,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
@@ -16,9 +16,9 @@ class DefaultController extends Controller
     public function indexAction()
     {
         $logs = $this->get('app.sitemap')->getLogs();
+
         return $this->render('default/index.html.twig', ['logs' => $logs]);
     }
-
 
     /**
      * @Route("/{date}/{title}", name="log",
@@ -33,11 +33,11 @@ class DefaultController extends Controller
         //TODO: all PHP versions support
         //$route = iconv('cp1251', 'utf-8', $request->getSchemeAndHttpHost() . $request->getRequestUri());
 
-        $route = urldecode($request->getSchemeAndHttpHost() . $request->getRequestUri());
+        $route = urldecode($request->getSchemeAndHttpHost().$request->getRequestUri());
         $log = $this->get('app.sitemap')->getLogByLoc($route);
+
         return $this->render('default/log.html.twig', ['log' => $log]);
     }
-
 
     /**
      * @Route("/sitemap.xml/{purge}", name="sitemap", defaults={"purge"="no"})

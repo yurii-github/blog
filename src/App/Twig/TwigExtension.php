@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Twig;
 
 class TwigExtension extends \Twig_Extension
@@ -7,19 +8,19 @@ class TwigExtension extends \Twig_Extension
     {
         return [
             new \Twig_Filter('inline', [$this, 'inlineFilter'], ['is_safe' => ['html']]),
-            new \Twig_Filter('nl2brpad', [$this, 'nl2brWithPadFilter'], ['is_safe' => ['html']]) ];
+            new \Twig_Filter('nl2brpad', [$this, 'nl2brWithPadFilter'], ['is_safe' => ['html']]), ];
     }
 
     public function nl2brWithPadFilter($content, $pad_lenght = 0)
     {
         $pad = str_pad('', $pad_lenght, ' ', STR_PAD_LEFT);
+
         return str_replace(["\n", "\r\n"], "\n".$pad, nl2br($content));
     }
 
-
     public function inlineFilter(array $files, $pad_lenght = 0)
     {
-        $render = "";
+        $render = '';
         $pad = str_pad('', $pad_lenght, ' ', STR_PAD_LEFT);
         $generatedDate = date('Y-m-d H:i:s');
         $render = $pad."/* embedded: $generatedDate */\n";
@@ -33,6 +34,6 @@ class TwigExtension extends \Twig_Extension
         $render = str_replace("\t", $pad, $render);
         $render = str_replace("\n", "\n$pad", $render);
 
-        return "<style type=\"text/css\" media=\"all\">\n".$render."</style>";
+        return "<style type=\"text/css\" media=\"all\">\n".$render.'</style>';
     }
 }
