@@ -16,6 +16,12 @@ function install()
             fi
 			;;
 
+		climate*)
+			echo -e "${color}getting latest code climate reporter..."
+			# broken for now https://github.com/codeclimate/php-test-reporter/issues/123
+			wget https://github.com/codeclimate/php-test-reporter/releases/download/0.4.0/codeclimate-test-reporter.phar
+			;;
+
 		deps*)
 		    echo -e "${color}downloading required dependencies...";
 		    composer require codeclimate/php-test-reporter --no-update
@@ -63,10 +69,10 @@ fi
 #
 if [ "$1" == "script" ]
 then
-	# if php7.1 use clover
-	if [ "${TRAVIS_PHP_VERSION:0:3}" == "7.1" ]
+	# if php7.0 use clover
+	if [ "${TRAVIS_PHP_VERSION:0:3}" == "7.0" ]
 	then
-		php vendor/phpunit.phar $CLOVER
+		php vendor/phpunit.phar --coverage-clover clover.xml"; fi
 	else
 		php vendor/phpunit.phar
 	fi
@@ -80,10 +86,10 @@ fi
 #
 if [ "$1" == "after_success" ]
 then
-	# if php7.1 use clover
-	if [ "${TRAVIS_PHP_VERSION:0:3}" == "7.1" ] && [ -n "$CLOVER" ]
+	# if php7.0 use clover
+	if [ "${TRAVIS_PHP_VERSION:0:3}" == "7.0" ] && [ -n "$CLOVER" ]
 	then
-		vendor/bin/test-reporter
+		vendor/bin/test-reporter clover.xml
 	else
 		echo -e "${color}skipping codeclimate reporter";
 	fi
