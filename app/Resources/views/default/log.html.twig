@@ -6,6 +6,6 @@
     <article>
         <h1>{{ log.title }}</h1>
         {{ log.content |nl2brpad(8) }}
-        <time>{{ log.date }}</time>
+        <time>{{ log.date|date('Y-m-d') }}</time>
     </article>
 {% endblock %}

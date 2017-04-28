@@ -30,27 +30,23 @@ class Sitemap
 
         foreach (new \DirectoryIterator($this->logsDir) as $fi) {
             if ($fi->isFile()) {
-                $log_filename = $fi->getFilename();
-                preg_match('/^\d{4}-\d{2}-\d{2}/', $log_filename, $date);
-                $date = $date[0];
-                $log = file_get_contents($fi->getPathname());
-                $log = str_replace("\r", '', $log);
-                $title = substr($log, 0, stripos($log, "\n"));
-                $link_title = str_replace(['(',')',' ','\\','/',':','*','?','"','<','>','|','+'], '-', $title);
-
+                $logFilename = $fi->getFilename();
+                $log = $this->loadLog($fi->getPathname());
+                $logLinkTitle = str_replace(['(',')',' ','\\','/',':','*','?','"','<','>','|','+'], '-', $log->title);
+                $logDate = $log->date->format('Y-m-d');
                 $url = $xml->addChild('url');
-                // atributes are used by our blog app, not needed for sitemap
-                $url->addAttribute('date', $date);
-                $url->addAttribute('title', $title);
-                //$url->addAttribute('file', iconv(config::get()->get_settings('fs_encoding'), 'utf-8', $log_filename));
-                $url->addAttribute('file', $log_filename);
-                $url->loc = $this->request_stack->getCurrentRequest()->getSchemeAndHttpHost().$this->request_stack->getCurrentRequest()->getBaseUrl() . "/$date/$link_title";
+                // attributes are used by our blog app, not needed for sitemap
+                $url->addAttribute('date', $logDate);
+                $url->addAttribute('title', $log->title);
+                $url->addAttribute('file', $logFilename);
+                $url->loc = $this->request_stack->getCurrentRequest()->getSchemeAndHttpHost().$this->request_stack->getCurrentRequest()->getBaseUrl() . "/$logDate/$logLinkTitle";
                 $url->lastmod = date('Y-m-d', $fi->getMTime());
-                $url->changefreq = 'never'; // always hourly daily weekly monthly yearly never
+                $url->changefreq = 'never'; // always | hourly | daily | weekly | monthly | yearly | never
                 $url->priority = 0.5; // 0.0 to 1.0
             }
         }
 
+        // beautify
         $dom = dom_import_simplexml($xml)->ownerDocument;
         $dom->formatOutput = true;
         return $dom->saveXML();
@@ -59,6 +55,24 @@ class Sitemap
     public function getSitemapFilename()
     {
         return $this->sitemap_filename;
+    }
+
+
+    public function loadLog($filename)
+    {
+        $raw = file_get_contents($filename);
+        $raw = str_replace("\r", null, $raw); //fix windows-like
+        // extract title from content
+        $lines = explode("\n", $raw);
+        $title = $lines[0];
+        unset($lines[0], $lines[1]);
+        // rest save as content
+        $content = implode("\n", $lines);
+        // extract date from filename
+        preg_match('/^\d{4}-\d{2}-\d{2}/', basename($filename), $date);
+        $date = \DateTime::createFromFormat('Y-m-d', $date[0]);
+
+        return new Log($title, $content, $date);
     }
 
     public function getLogs()
@@ -76,8 +90,8 @@ class Sitemap
             if (!file_exists($filename)) {
                 continue;
             }
-            $log = new Log($filename, (string)$child->loc);
-            $logs[$log->loc] = $log;
+            $log = $this->loadLog($filename);
+            $logs[(string)$child->loc] = $log;
         }
 
         // apply DESC sorting

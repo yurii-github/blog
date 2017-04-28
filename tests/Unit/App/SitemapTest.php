@@ -18,6 +18,21 @@ class Sitemap extends TestCase
      */
     protected $sitemap;
 
+    protected $testLogFilename = TESTDIR .'/_data/logs/2000-01-01_a-b-c.txt';
+    protected $testLogSitemap = <<<SITEMAP
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url date="2000-01-01" title="a b c" file="2000-01-01_a-b-c.txt">
+    <loc>http://localhost/unit-blog/2000-01-01/a-b-c</loc>
+    <lastmod>{MDATE}</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.5</priority>
+  </url>
+</urlset>
+
+SITEMAP;
+
+
     static function setUpBeforeClass()
     {
         if (!is_dir(TESTDIR.'/_data/tmp')) {
@@ -52,26 +67,13 @@ class Sitemap extends TestCase
 
     public function test_generate()
     {
-        $logMDate = (new \DateTime())->setTimestamp(filemtime(TESTDIR.'/_data/logs/0000-00-00_a-b-c.txt'))->format('Y-m-d');
-        $data =<<<SITEMAP
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url date="0000-00-00" title="a b c" file="0000-00-00_a-b-c.txt">
-    <loc>http://localhost/unit-blog/0000-00-00/a-b-c</loc>
-    <lastmod>$logMDate</lastmod>
-    <changefreq>never</changefreq>
-    <priority>0.5</priority>
-  </url>
-</urlset>
-
-SITEMAP;
-
-        $this->assertEquals($data, $this->sitemap->generate());
+        $logMDate = (new \DateTime())->setTimestamp(filemtime($this->testLogFilename))->format('Y-m-d');
+        $this->assertEquals(str_replace('{MDATE}', $logMDate, $this->testLogSitemap), $this->sitemap->generate());
     }
 
     public function test_getLogs()
     {
-        $loc = 'http://localhost/unit-blog/0000-00-00/a-b-c';
+        $loc = 'http://localhost/unit-blog/2000-01-01/a-b-c';
         $logs = $this->sitemap->getLogs();
 
         $this->assertEquals(1, count($logs));
@@ -81,7 +83,7 @@ SITEMAP;
 
     public function test_getLogByLoc()
     {
-        $loc = 'http://localhost/unit-blog/0000-00-00/a-b-c';
+        $loc = 'http://localhost/unit-blog/2000-01-01/a-b-c';
         $log = $this->sitemap->getLogByLoc($loc);
         $this->assertInstanceOf(Log::class, $log);
     }
@@ -92,7 +94,7 @@ SITEMAP;
      */
     public function test_getLogByLoc_NoLogRecordInSitemap()
     {
-        $loc = 'http://localhost/unit-blog/0000-00-00/a-b-c-lalala';
+        $loc = 'http://localhost/unit-blog/2000-01-01/a-b-c-lalala';
         $log = $this->sitemap->getLogByLoc($loc);
         $this->assertInstanceOf(Log::class, $log);
     }
@@ -114,4 +116,12 @@ SITEMAP;
         $this->sitemap->getLogByLoc($loc);
     }
 
+
+    public function test_loadLog()
+    {
+        $log = $this->sitemap->loadLog($this->testLogFilename);
+        $this->assertEquals('a b c', $log->title);
+        $this->assertEquals("line 1\nline 2", $log->content);
+        $this->assertEquals(\DateTime::createFromFormat('Y-m-d', '2000-01-01'), $log->date);
+    }
 }

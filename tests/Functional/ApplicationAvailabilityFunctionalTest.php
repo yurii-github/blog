@@ -6,8 +6,12 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ApplicationAvailabilityFunctionalTest extends WebTestCase
 {
-    protected function tearDown()
+    protected function _createClient()
     {
+        $client = self::createClient();
+        $testSitemap = dirname(static::$kernel->getRootDir()).'/web/sitemap_test.xml';
+        @unlink($testSitemap);
+        return $client;
     }
 
     /**
@@ -15,7 +19,7 @@ class ApplicationAvailabilityFunctionalTest extends WebTestCase
      */
     public function test_PageIsSuccessful($url)
     {
-        $client = $this->createClient();
+        $client = $this->_createClient();
         $client->request('GET', $url);
         $this->assertTrue($client->getResponse()->isSuccessful());
     }
@@ -28,16 +32,14 @@ class ApplicationAvailabilityFunctionalTest extends WebTestCase
 
     public function test_GetLog()
     {
-        $client = $this->createClient();
-        $client->request('GET', '/0000-00-00/a-b-c');
-        $this->assertTrue($client->getResponse()->isSuccessful());
-
+        $client = $this->_createClient();
+        $client->request('GET', '/2000-01-01/a-b-c');
         $content = $client->getResponse()->getContent();
-
+        $this->assertTrue($client->getResponse()->isSuccessful());
         $this->assertContains('<h1>a b c</h1>', $content);
         $this->assertContains('line 1<br />', $content);
         $this->assertContains('line 2', $content);
-        $this->assertContains('<time>0000-00-00</time>', $content);
+        $this->assertContains('<time>2000-01-01</time>', $content);
     }
 
 }
