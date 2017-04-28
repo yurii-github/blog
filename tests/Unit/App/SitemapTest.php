@@ -18,6 +18,18 @@ class Sitemap extends TestCase
      */
     protected $sitemap;
 
+    static function setUpBeforeClass()
+    {
+        if (!is_dir(TESTDIR.'/_data/tmp')) {
+            // dir doesn't exist, make it
+            mkdir(TESTDIR.'/_data/tmp');
+        }
+    }
+
+    static function tearDownAfterClass()
+    {
+        @unlink(TESTDIR.'/_data/tmp');
+    }
 
     protected function setUp()
     {

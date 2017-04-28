@@ -4,6 +4,7 @@
 # Code Quality Coverage                   https://codeclimate.com
 #
 # Thanks for your services, guys (c) Yurii K.
+#
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 language: php
 php:
