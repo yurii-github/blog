@@ -19,6 +19,7 @@ matrix:
 # build lifecycle
 #
 before_install:
+  - cp app/config//config.yml.dist app/config/config.yml
 install:
   - bash .travis.sh install
 before_script:
