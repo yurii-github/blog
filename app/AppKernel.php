@@ -9,7 +9,7 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 // require Composer's autoloader
 $loader = require __DIR__.'/../vendor/autoload.php';
 // auto-load annotations
-AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
+AnnotationRegistry::registerLoader([$loader, 'loadClass']);
 
 class AppKernel extends Kernel
 {
@@ -17,11 +17,11 @@ class AppKernel extends Kernel
 
     public function registerBundles()
     {
-        $bundles = array(
+        $bundles = [
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Symfony\Bundle\TwigBundle\TwigBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-        );
+        ];
 
         if ($this->getEnvironment() == 'dev') {
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
@@ -41,10 +41,10 @@ class AppKernel extends Kernel
 
         // configure WebProfilerBundle only if the bundle is enabled
         if (isset($this->bundles['WebProfilerBundle'])) {
-            $c->loadFromExtension('web_profiler', array(
+            $c->loadFromExtension('web_profiler', [
                 'toolbar' => true,
                 'intercept_redirects' => false,
-            ));
+            ]);
         }
     }
 

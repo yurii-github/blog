@@ -35,5 +35,4 @@ class TwigExtension extends \Twig_Extension
 
         return "<style type=\"text/css\" media=\"all\">\n".$render."</style>";
     }
-
 }

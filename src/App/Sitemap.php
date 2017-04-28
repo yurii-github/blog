@@ -49,7 +49,6 @@ class Sitemap
                 $url->changefreq = 'never'; // always hourly daily weekly monthly yearly never
                 $url->priority = 0.5; // 0.0 to 1.0
             }
-
         }
 
         $dom = dom_import_simplexml($xml)->ownerDocument;
@@ -82,7 +81,9 @@ class Sitemap
         }
 
         // apply DESC sorting
-        uasort($logs, function ($first, $second) { return $first->date > $second->date ? - 1 : 1; });
+        uasort($logs, function ($first, $second) {
+            return $first->date > $second->date ? - 1 : 1;
+        });
 
         return $logs;
     }
@@ -96,6 +97,4 @@ class Sitemap
         }
         return $logs[$loc];
     }
-
-
 }

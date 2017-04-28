@@ -27,7 +27,7 @@ class DefaultController extends Controller
      *   }
      * )
      */
-    public function logAction(Request $request,  $date, $title)
+    public function logAction(Request $request, $date, $title)
     {
         //dump(urldecode($_SERVER['REQUEST_URI']));
         //TODO: all PHP versions support
@@ -53,5 +53,4 @@ class DefaultController extends Controller
 
         return new BinaryFileResponse($sitemap_filename);
     }
-
 }

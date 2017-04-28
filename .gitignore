@@ -7,3 +7,5 @@
 /tests/reports
 /web/sitemap_test.xml
 /app/config/config.yml
+/php-cs-fixer-v2.phar
+/phpunit.phar
