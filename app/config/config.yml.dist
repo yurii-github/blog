@@ -17,6 +17,14 @@ framework:
     templating:
         engines: ['twig']
     profiler: { only_exceptions: false }
+    cache:
+        # auto service as 'cache.app'
+        app: cache.adapter.filesystem
+        pools:
+        # TODO: doesnt work (no service) in microF. why?
+            cache.app.log:
+                adapter: cache.adapter.filesystem
+                default_lifetime: 5
 
 services:
     app.mytwig_extension_helper:

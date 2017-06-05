@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
@@ -30,10 +31,23 @@ class DefaultController extends Controller
      */
     public function logAction(Request $request, $date, $title)
     {
+        /** @var $cache \Symfony\Component\Cache\Adapter\FilesystemAdapter */
+        $cache = $this->get('cache.app');
         $route = urldecode($request->getSchemeAndHttpHost().$request->getRequestUri());
-        $log = $this->get('app.sitemap')->getLogByLoc($route);
+        $cacheKey = 'log_'.md5($route);
+        $cachedResponse = $cache->getItem($cacheKey);
 
-        return $this->render('default/log.html.twig', ['log' => $log]);
+        if ($cachedResponse->isHit()) {
+            $response = $cachedResponse->get();
+        } else {
+            $log = $this->get('app.sitemap')->getLogByLoc($route);
+            $response = $this->render('default/log.html.twig', ['log' => $log]);
+            $cachedResponse->set($response);
+            $cachedResponse->expiresAfter(86400); # 24h 86400
+            $cache->save($cachedResponse);
+        }
+
+        return $response;
     }
 
     /**
