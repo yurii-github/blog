@@ -24,15 +24,12 @@ class DefaultController extends Controller
      * @Route("/{date}/{title}", name="log",
      *   requirements={
      *     "date":"\d{4}-\d{2}-\d{2}"
-     *   }
+     *   },
+     *   options = { "utf8": true }
      * )
      */
     public function logAction(Request $request, $date, $title)
     {
-        //dump(urldecode($_SERVER['REQUEST_URI']));
-        //TODO: all PHP versions support
-        //$route = iconv('cp1251', 'utf-8', $request->getSchemeAndHttpHost() . $request->getRequestUri());
-
         $route = urldecode($request->getSchemeAndHttpHost().$request->getRequestUri());
         $log = $this->get('app.sitemap')->getLogByLoc($route);
 

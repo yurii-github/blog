@@ -9,3 +9,5 @@
 /app/config/config.yml
 /php-cs-fixer-v2.phar
 /phpunit.phar
+
+/web/robots.txt
