@@ -57,7 +57,7 @@ class DefaultController extends Controller
     {
         $sitemap_filename = $this->getParameter('sitemap_filename');
 
-        if (!file_exists($sitemap_filename) || $purge == 'yes') {
+        if (!file_exists($sitemap_filename) || $purge == 'purge') {
             $sitemap = $this->get('app.sitemap')->generate();
             file_put_contents($sitemap_filename, $sitemap);
         }

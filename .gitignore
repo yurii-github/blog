@@ -1,13 +1,17 @@
-/vendor
-/logs
-/var
 /.idea
-/composer.lock
-/web/sitemap.xml
-/tests/reports
-/web/sitemap_test.xml
-/app/config/config.yml
+
 /php-cs-fixer-v2.phar
 /phpunit.phar
 
+# composer
+/composer.lock
+/vendor
+
+# custom web
+/logs
+/var
+/tests/reports
 /web/robots.txt
+/web/sitemap.xml
+/app/config/config.yml
+/app/Resources/TwigBundle/views/Exception/error404.html.twig
