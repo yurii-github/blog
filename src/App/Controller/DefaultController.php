@@ -16,9 +16,22 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        $logs = $this->get('app.sitemap')->getLogs();
+        /** @var $cache \Symfony\Component\Cache\Adapter\FilesystemAdapter */
+        $cache = $this->get('cache.app');
+        $cachedResponse = $cache->getItem('page_index');
 
-        return $this->render('default/index.html.twig', ['logs' => $logs]);
+        if ($cachedResponse->isHit()) {
+            $response = $cachedResponse->get();
+        } else {
+            $logs = $this->get('app.sitemap')->getLogs();
+            $response = $this->render('default/index.html.twig', ['logs' => $logs]);
+
+            $cachedResponse->set($response);
+            $cachedResponse->expiresAfter(86400*2); # 48h
+            $cache->save($cachedResponse);
+        }
+
+        return $response;
     }
 
     /**
@@ -34,14 +47,14 @@ class DefaultController extends Controller
         /** @var $cache \Symfony\Component\Cache\Adapter\FilesystemAdapter */
         $cache = $this->get('cache.app');
         $route = urldecode($request->getSchemeAndHttpHost().$request->getRequestUri());
-        $cacheKey = 'log_'.md5($route);
-        $cachedResponse = $cache->getItem($cacheKey);
+        $cachedResponse = $cache->getItem('log_'.md5($route));
 
         if ($cachedResponse->isHit()) {
             $response = $cachedResponse->get();
         } else {
             $log = $this->get('app.sitemap')->getLogByLoc($route);
             $response = $this->render('default/log.html.twig', ['log' => $log]);
+
             $cachedResponse->set($response);
             $cachedResponse->expiresAfter(86400); # 24h 86400
             $cache->save($cachedResponse);
@@ -60,6 +73,12 @@ class DefaultController extends Controller
         if (!file_exists($sitemap_filename) || $purge == 'purge') {
             $sitemap = $this->get('app.sitemap')->generate();
             file_put_contents($sitemap_filename, $sitemap);
+
+            /** @var $cache \Symfony\Component\Cache\Adapter\FilesystemAdapter */
+            $cache = $this->get('cache.app');
+            $cachedResponse = $cache->getItem('page_index');
+            $cachedResponse->expiresAfter(0);
+            $cache->save($cachedResponse);
         }
 
         return new BinaryFileResponse($sitemap_filename);
