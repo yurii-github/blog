@@ -43,6 +43,7 @@ header a {
 h1 { font-size: 1.5rem; font-weight: bold; padding: 1rem; }
 main {}
 article time { display: block; margin-top: 1rem; font-size: x-small; font-style: italic; }
+article a { display: inline-block; }
 
 nav { margin-top: 1rem; margin-bottom: 1rem; }
 nav time { font-size: x-small; margin-right: 1rem; }

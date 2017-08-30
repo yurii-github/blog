@@ -16,18 +16,34 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
+		$sitemap_filename = $this->getParameter('sitemap_filename');
+		
         /** @var $cache \Symfony\Component\Cache\Adapter\FilesystemAdapter */
         $cache = $this->get('cache.app');
         $cachedResponse = $cache->getItem('page_index');
+		$cachedSitemapMTime = $cache->getItem('sitemap_modify_time');
+		$sitemapMTime = file_exists($sitemap_filename) ? filemtime($sitemap_filename) : 0;
+		$isExpired = false;
+				
+		if($cachedSitemapMTime->isHit()) {
+			$time = $cachedSitemapMTime->get();
 
-        if ($cachedResponse->isHit()) {
+			if($time < $sitemapMTime) {
+				$time = $sitemapMTime;
+				$cachedSitemapMTime->set($sitemapMTime);
+				$cache->save($cachedSitemapMTime);
+				$isExpired = true;
+			}
+		}
+
+        if ($cachedResponse->isHit() && !$isExpired) {
             $response = $cachedResponse->get();
         } else {
             $logs = $this->get('app.sitemap')->getLogs();
             $response = $this->render('default/index.html.twig', ['logs' => $logs]);
 
             $cachedResponse->set($response);
-            $cachedResponse->expiresAfter(86400*2); # 48h
+            //$cachedResponse->expiresAfter(86400*2); # 48h
             $cache->save($cachedResponse);
         }
 
@@ -51,12 +67,14 @@ class DefaultController extends Controller
 
         if ($cachedResponse->isHit()) {
             $response = $cachedResponse->get();
+			//$cachedResponse->expiresAfter(0);$cache->save($cachedResponse); // manual refresh
         } else {
             $log = $this->get('app.sitemap')->getLogByLoc($route);
             $response = $this->render('default/log.html.twig', ['log' => $log]);
 
             $cachedResponse->set($response);
             $cachedResponse->expiresAfter(86400); # 24h 86400
+			
             $cache->save($cachedResponse);
         }
 
