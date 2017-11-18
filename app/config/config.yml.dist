@@ -1,5 +1,7 @@
 
 parameters:
+    cache_log: 86400 # seconds
+    cache_sitemap: 0 #forever
     meta:
          title: ''
          generator: ''

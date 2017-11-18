@@ -2,12 +2,10 @@
 
 namespace App\Controller;
 
-use App\Log;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
@@ -41,9 +39,7 @@ class DefaultController extends Controller
         } else {
             $logs = $this->get('app.sitemap')->getLogs();
             $response = $this->render('default/index.html.twig', ['logs' => $logs]);
-
-            $cachedResponse->set($response);
-            //$cachedResponse->expiresAfter(86400*2); # 48h
+            $cachedResponse->set($response)->expiresAfter($this->getParameter('cache_sitemap'));
             $cache->save($cachedResponse);
         }
 
@@ -72,9 +68,7 @@ class DefaultController extends Controller
             $log = $this->get('app.sitemap')->getLogByLoc($route);
             $response = $this->render('default/log.html.twig', ['log' => $log]);
 
-            $cachedResponse->set($response);
-            $cachedResponse->expiresAfter(86400); # 24h 86400
-			
+            $cachedResponse->set($response)->expiresAfter($this->getParameter('cache_log'));
             $cache->save($cachedResponse);
         }
 
@@ -94,8 +88,7 @@ class DefaultController extends Controller
 
             /** @var $cache \Symfony\Component\Cache\Adapter\FilesystemAdapter */
             $cache = $this->get('cache.app');
-            $cachedResponse = $cache->getItem('page_index');
-            $cachedResponse->expiresAfter(0);
+            $cachedResponse = $cache->getItem('page_index')->expiresAfter($this->getParameter('cache_log'));
             $cache->save($cachedResponse);
         }
 
