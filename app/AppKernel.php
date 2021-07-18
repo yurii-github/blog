@@ -1,11 +1,11 @@
 <?php
 
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\RouteCollectionBuilder;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 
 $loader = require __DIR__.'/../vendor/autoload.php';
 // auto-load annotations
@@ -23,7 +23,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
         ];
 
-        if ($this->getEnvironment() == 'dev') {
+        if ('dev' == $this->getEnvironment()) {
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new Symfony\Bundle\DebugBundle\DebugBundle();
         }
@@ -35,7 +35,7 @@ class AppKernel extends Kernel
     {
         $loader->load(__DIR__.'/config/config.yml');
 
-        if ($this->getEnvironment() == 'test') {
+        if ('test' == $this->getEnvironment()) {
             $loader->load(__DIR__.'/config/config_test.yml');
         }
 
@@ -77,7 +77,7 @@ class AppKernel extends Kernel
      */
     public function getLogDir()
     {
-        if ($this->getEnvironment() == 'test') {
+        if ('test' == $this->getEnvironment()) {
             return __DIR__.'/../tests/_data/logs';
         }
 

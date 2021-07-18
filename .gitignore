@@ -1,17 +1,19 @@
 /.idea
-
-/php-cs-fixer-v2.phar
-/phpunit.phar
-
-# composer
 /composer.lock
+/.phpunit.result.cache
+
+#
+# symfony
+#
+/var
 /vendor
 
-# custom web
+#
+# application
+#
 /logs
-/var
-/tests/reports
 /web/robots.txt
+/tests/reports
 /web/sitemap.xml
+/web/sitemap_test.xml
 /app/config/config.yml
-/app/Resources/TwigBundle/views/Exception/error404.html.twig

@@ -1,7 +1,5 @@
 
 parameters:
-    cache_log: 86400 # seconds
-    cache_sitemap: 0 #forever
     meta:
          title: ''
          generator: ''
@@ -13,6 +11,8 @@ parameters:
     web_dir: '%kernel.root_dir%/../web'
     logs_dir: '%kernel.root_dir%/../logs'
     sitemap_filename: '%web_dir%/sitemap.xml'
+    cache_sitemap: 86400 # 24 hours
+    cache_log: 60 # 1 minute
 
 framework:
     secret: S0ME_SECRET
