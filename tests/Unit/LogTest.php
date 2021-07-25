@@ -5,6 +5,9 @@ namespace Tests\Unit;
 use App\Log;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \App\Log
+ */
 class LogTest extends TestCase
 {
     public function testInstance()

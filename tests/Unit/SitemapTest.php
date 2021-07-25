@@ -7,6 +7,10 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * @covers \App\Sitemap
+ * @uses \App\Log
+ */
 class SitemapTest extends TestCase
 {
     /**

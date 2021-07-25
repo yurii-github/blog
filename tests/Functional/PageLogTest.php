@@ -4,15 +4,15 @@ namespace Tests\Functional;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
+/**
+ * @covers \App\Controller\DefaultController::log
+ * @uses \App\Log
+ * @uses \App\Sitemap
+ * @uses \App\Twig\TwigExtension::inlineFilter
+ * @uses \App\Twig\TwigExtension::nl2brWithPadFilter
+ */
 class PageLogTest extends WebTestCase
 {
-    public function tes2tPageIsSuccessful()
-    {
-        $client = $this->createClient();
-        $client->request('GET', '/');
-        $this->assertTrue($client->getResponse()->isSuccessful());
-    }
-
     public function testGetLog()
     {
         $client = $this->createClient();

@@ -12,4 +12,5 @@ Fix style
 Test code
 ```
 ./vendor/bin/phpunit
+./vendor/bin/phpunit --coverage-html .phpunit.cache/coverage
 ```
