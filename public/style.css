@@ -1,0 +1,61 @@
+body, main, header, article, nav, time, a, h1 {
+  padding: 0; margin: 0;
+  font-size: 1rem; color: white; font-weight: normal;
+  background-color: black;
+}
+
+body {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-family: "Open Sans", sans-serif;;
+  background-color: black;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1rem;
+}
+
+@media screen and (orientation:portrait) and (max-width: 411px) {
+  body {
+    font-size: 0.7rem;
+  }
+}
+
+@media screen and (orientation:portrait) and (max-width: 485px) {
+  body {
+    font-size: 0.8rem;
+  }
+}
+
+a, a:visited { display: block; text-decoration: none; }
+a:hover { color: red }
+
+header a {
+  text-align: center;
+  font-size: 1.2rem;
+  color: black;
+  text-shadow: 0.05rem 0.05rem red;
+  text-transform: uppercase;
+  animation: pulsate 4.5s ease-in-out infinite;
+}
+
+h1 { font-size: 1.5rem; font-weight: bold; padding: 1rem; }
+main {}
+article time { display: block; margin-top: 1rem; font-size: x-small; font-style: italic; }
+article a { display: inline-block; }
+
+nav { margin-top: 1rem; margin-bottom: 1rem; }
+nav time { font-size: x-small; margin-right: 1rem; }
+nav a { border-bottom: 0.1em solid white; padding: 0.5rem; white-space: nowrap; }
+
+
+@keyframes pulsate {
+  0% {transform: scale(0.95, 0.95); opacity: 1; color: red;}
+  25% {opacity: 0.7;}
+  50% {transform: scale(1, 1); opacity: 1.0; color: black; }
+  
+  50.001% {transform: scale(1, 1); opacity: 1.0;} 
+  75% {opacity: 0.7;}
+  100% {transform: scale(0.95, 0.95); opacity: 1; color: red;}
+}

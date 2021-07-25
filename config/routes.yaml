@@ -1,0 +1,17 @@
+index:
+    path: /
+    controller: App\Controller\DefaultController::index
+    
+log:
+    path: /{date}/{title}
+    controller: App\Controller\DefaultController::log
+    requirements:
+        date: '\d{4}-\d{2}-\d{2}'
+    options:
+        utf8: true
+
+sitemap:
+    path: /sitemap.xml/{purge}
+    controller: App\Controller\DefaultController::sitemap
+    defaults:
+        purge: "no"

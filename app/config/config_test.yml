@@ -1,6 +1,0 @@
-framework:
-    test: ~
-
-parameters:
-    logs_dir: '%kernel.root_dir%/../tests/_data/logs'
-    sitemap_filename: '%web_dir%/sitemap_test.xml'

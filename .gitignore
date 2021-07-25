@@ -1,19 +1,33 @@
 /.idea
-/composer.lock
-/.phpunit.result.cache
-
-#
-# symfony
-#
-/var
-/vendor
+/.phpunit.cache
 
 #
 # application
 #
 /logs
-/web/robots.txt
-/tests/reports
-/web/sitemap.xml
-/web/sitemap_test.xml
-/app/config/config.yml
+/public/robots.txt
+/public/sitemap.xml
+/public/favi.png
+/public/images/
+/public/proof/
+/tests/_data/tmp
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
+
+###> friendsofphp/php-cs-fixer ###
+/.php-cs-fixer.php
+/.php-cs-fixer.cache
+###< friendsofphp/php-cs-fixer ###
