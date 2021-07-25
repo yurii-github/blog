@@ -11,8 +11,7 @@ parameters:
         description: '%env(META_DESCRIPTION)%'
         author: '%env(META_AUTHOR)%'
         slogan: '%env(META_SLOGAN)%'
-    cache_sitemap: 86400 # 24 hours
-    cache_log: 60 # 1 minute
+    cache_log: 3600
 
 services:
     # default configuration for services in *this* file
@@ -39,6 +38,3 @@ services:
             $sitemap_filename: '%kernel.project_dir%/public/sitemap.xml'
             $logsDir: '%kernel.project_dir%/logs'
             $requestStack: '@request_stack'
-    cache.adapter.null:
-        class: Symfony\Component\Cache\Adapter\NullAdapter
-        arguments: [~]

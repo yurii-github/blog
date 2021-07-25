@@ -16,39 +16,25 @@ class DefaultController extends AbstractController
     protected const CACHE_PAGE_INDEX = 'page_index';
     protected const CACHE_PAGE_LOG = 'page_log_{HASH}';
 
+    
     public function index(Sitemap $sitemap, CacheInterface $cache)
     {
-        $cachedResponse = $cache->getItem(self::CACHE_PAGE_INDEX);
-        assert($cachedResponse instanceof CacheItemInterface);
-
-        if (!$cachedResponse->isHit()) {
+        return $cache->get(self::CACHE_PAGE_INDEX, function (CacheItemInterface $item) use ($sitemap) {
             $logs = $sitemap->getLogs();
-            $response = $this->render('index.html.twig', ['logs' => $logs]);
-            $cachedResponse->set($response);
-            $cachedResponse->expiresAfter($this->getParameter('cache_sitemap'));
-            $cache->save($cachedResponse);
-            $sitemap->flush();
-        }
-
-        return $cachedResponse->get();
+            return $this->render('index.html.twig', ['logs' => $logs]);
+        });
     }
 
 
     public function log(Request $request, CacheInterface $cache, Sitemap $sitemap, string $date, string $title)
     {
         $route = urldecode($request->getSchemeAndHttpHost().$request->getRequestUri());
-        $cachedResponse = $cache->getItem(str_replace('{HASH}', md5($route), self::CACHE_PAGE_LOG));
-        assert($cachedResponse instanceof CacheItemInterface);
-
-        if (!$cachedResponse->isHit()) {
+        $cacheKey = str_replace('{HASH}', md5($route), self::CACHE_PAGE_LOG);
+        
+        return $cache->get($cacheKey, function (CacheItemInterface $item) use ($sitemap, $route) {
             $log = $sitemap->getLogByLoc($route);
-            $response = $this->render('log.html.twig', ['log' => $log]);
-            $cachedResponse->set($response);
-            $cachedResponse->expiresAfter($this->getParameter('cache_log'));
-            $cache->save($cachedResponse);
-        }
-
-        return $cachedResponse->get();
+            return $this->render('log.html.twig', ['log' => $log]);
+        });
     }
 
 
