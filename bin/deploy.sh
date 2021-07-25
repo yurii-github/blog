@@ -4,4 +4,4 @@
 #
 #
 git pull
-composer install --no-dev --optimize-autoloader
+composer install --no-dev --optimize-autoloader --no-cache
