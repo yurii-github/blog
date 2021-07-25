@@ -65,11 +65,6 @@ SITEMAP;
         @unlink(TESTDIR.'/_data/tmp/sitemap.xml');
     }
 
-    public function testGenerate()
-    {
-        $logMDate = (new \DateTime())->setTimestamp(filemtime($this->testLogFilename))->format('Y-m-d');
-        $this->assertEquals(str_replace('{MDATE}', $logMDate, $this->testLogSitemap), $this->sitemap->generate());
-    }
 
     public function testGetLogs()
     {
@@ -109,7 +104,7 @@ SITEMAP;
         file_put_contents($logToRemoveFilename, "to remove\n\nline 1 content");
         $loc = 'http://localhost/unit-blog/2017-04-26/to-remove';
 
-        file_put_contents($this->sitemap->getSitemapFilename(), $this->sitemap->generate());
+        $this->sitemap->flush();
         unlink($logToRemoveFilename);
 
         $this->sitemap->getLogByLoc($loc);

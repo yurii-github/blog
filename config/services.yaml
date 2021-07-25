@@ -38,4 +38,4 @@ services:
         arguments:
             $sitemap_filename: '%kernel.project_dir%/public/sitemap.xml'
             $logsDir: '%kernel.project_dir%/logs'
-            $request_stack: '@request_stack'
+            $requestStack: '@request_stack'

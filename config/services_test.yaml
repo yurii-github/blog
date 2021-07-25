@@ -5,4 +5,7 @@ services:
         arguments:
             $sitemap_filename: '%kernel.project_dir%/tests/_data/tmp/sitemap_test.xml'
             $logsDir: '%kernel.project_dir%/tests/_data/logs'
-            $request_stack: '@request_stack'
+            $requestStack: '@request_stack'
+    cache.adapter.null:
+        class: Symfony\Component\Cache\Adapter\NullAdapter
+        arguments: [~]

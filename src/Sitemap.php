@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -11,21 +13,23 @@ class Sitemap
     protected $request_stack;
     protected $logsDir;
     protected $logger;
+    protected $requestStack;
 
-    public function __construct(string $sitemap_filename, string $logsDir, RequestStack $request_stack)
+
+    public function __construct(string $sitemap_filename, string $logsDir, RequestStack $requestStack)
     {
         $this->sitemap_filename = $sitemap_filename;
-        $this->request_stack = $request_stack;
         $this->logsDir = $logsDir;
+        $this->requestStack = $requestStack;
     }
 
-    /**
-     * generates sitemap based on all logs available in logs directory.
-     *
-     * @return string generated sitemap (http://www.sitemaps.org/protocol.html)
-     */
-    public function generate()
+
+    public function flush($force = false)
     {
+        if (file_exists($this->sitemap_filename) && !$force) {
+            return;
+        }
+
         $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
 
         foreach (new \DirectoryIterator($this->logsDir) as $fi) {
@@ -39,29 +43,30 @@ class Sitemap
                 $url->addAttribute('date', $logDate);
                 $url->addAttribute('title', $log->title);
                 $url->addAttribute('file', $logFilename);
-                $url->loc = $this->request_stack->getCurrentRequest()->getSchemeAndHttpHost().$this->request_stack->getCurrentRequest()->getBaseUrl()."/$logDate/$logLinkTitle";
+                $url->loc = $this->requestStack->getCurrentRequest()->getSchemeAndHttpHost().$this->requestStack->getCurrentRequest()->getBaseUrl()."/$logDate/$logLinkTitle";
                 $url->lastmod = date('Y-m-d', $fi->getMTime());
                 $url->changefreq = 'never'; // always | hourly | daily | weekly | monthly | yearly | never
                 $url->priority = 0.5; // 0.0 to 1.0
             }
         }
 
-        // beautify
+        // write generated sitemap (http://www.sitemaps.org/protocol.html)
         $dom = dom_import_simplexml($xml)->ownerDocument;
         $dom->formatOutput = true;
-
-        return $dom->saveXML();
+        file_put_contents($this->sitemap_filename, $dom->saveXML());
     }
+
 
     public function getSitemapFilename()
     {
         return $this->sitemap_filename;
     }
 
+
     public function loadLog($filename)
     {
         $raw = file_get_contents($filename);
-        $raw = str_replace("\r", null, $raw); //fix windows-like
+        $raw = str_replace("\r", '', $raw); //fix windows-like
         // extract title from content
         $lines = explode("\n", $raw);
         $title = $lines[0];
@@ -75,10 +80,11 @@ class Sitemap
         return new Log($title, $content, $date);
     }
 
+
     public function getLogs()
     {
         if (!file_exists($this->sitemap_filename)) {
-            file_put_contents($this->sitemap_filename, $this->generate());
+            $this->flush();
         }
 
         $xml = simplexml_load_string(file_get_contents($this->sitemap_filename));
@@ -101,10 +107,11 @@ class Sitemap
         return $logs;
     }
 
+
     public function getLogByLoc(string $loc)
     {
         $logs = $this->getLogs();
-        if (!@$logs[$loc]) {
+        if (empty($logs[$loc])) {
             throw new NotFoundHttpException("Log record was not found: $loc");
         }
 

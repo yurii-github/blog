@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Sitemap;
+use Psr\Cache\CacheItemInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -10,61 +13,50 @@ use Symfony\Contracts\Cache\CacheInterface;
 
 class DefaultController extends AbstractController
 {
+    protected const CACHE_PAGE_INDEX = 'page_index';
+    protected const CACHE_PAGE_LOG = 'page_log_{HASH}';
+
     public function index(Sitemap $sitemap, CacheInterface $cache)
     {
-        $cachedResponse = $cache->getItem('page_index');
-        $cachedSitemapMTime = $cache->getItem('sitemap_modify_time');
-        $sitemapMTime = (int) @filemtime($sitemap->getSitemapFilename());
-        $isExpired = false;
+        $cachedResponse = $cache->getItem(self::CACHE_PAGE_INDEX);
+        assert($cachedResponse instanceof CacheItemInterface);
 
-        if ($cachedSitemapMTime->isHit()) {
-            $time = $cachedSitemapMTime->get();
-
-            if ($time < $sitemapMTime) {
-                $cachedSitemapMTime->set($sitemapMTime);
-                $cache->save($cachedSitemapMTime);
-                $isExpired = true;
-            }
-        }
-
-        if ($cachedResponse->isHit() && !$isExpired) {
-            $response = $cachedResponse->get();
-        } else {
+        if (!$cachedResponse->isHit()) {
             $logs = $sitemap->getLogs();
             $response = $this->render('index.html.twig', ['logs' => $logs]);
-            $cachedResponse->set($response)->expiresAfter($this->getParameter('cache_sitemap'));
+            $cachedResponse->set($response);
+            $cachedResponse->expiresAfter($this->getParameter('cache_sitemap'));
             $cache->save($cachedResponse);
+            $sitemap->flush();
         }
 
-        return $response;
+        return $cachedResponse->get();
     }
+
 
     public function log(Request $request, CacheInterface $cache, Sitemap $sitemap, string $date, string $title)
     {
         $route = urldecode($request->getSchemeAndHttpHost().$request->getRequestUri());
-        $cachedResponse = $cache->getItem('log_'.md5($route));
+        $cachedResponse = $cache->getItem(str_replace('{HASH}', md5($route), self::CACHE_PAGE_LOG));
+        assert($cachedResponse instanceof CacheItemInterface);
 
-        if ($cachedResponse->isHit()) {
-            $response = $cachedResponse->get();
-        } else {
+        if (!$cachedResponse->isHit()) {
             $log = $sitemap->getLogByLoc($route);
             $response = $this->render('log.html.twig', ['log' => $log]);
-
-            $cachedResponse->set($response)->expiresAfter($this->getParameter('cache_log'));
+            $cachedResponse->set($response);
+            $cachedResponse->expiresAfter($this->getParameter('cache_log'));
             $cache->save($cachedResponse);
         }
 
-        return $response;
+        return $cachedResponse->get();
     }
 
-    public function sitemap(Sitemap $sitemap, CacheInterface $cache, $purge)
+
+    public function sitemap(Sitemap $sitemap, CacheInterface $cache, $purge): BinaryFileResponse
     {
         if (!file_exists($sitemap->getSitemapFilename()) || 'purge' == $purge) {
-            file_put_contents($sitemap->getSitemapFilename(), $sitemap->generate());
-
-            $cachedResponse = $cache->getItem('page_index');
-            $cachedResponse->expiresAfter(0);
-            $cache->save($cachedResponse);
+            $sitemap->flush();
+            $cache->delete(self::CACHE_PAGE_INDEX);
         }
 
         return new BinaryFileResponse($sitemap->getSitemapFilename());
