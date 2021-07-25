@@ -9,6 +9,7 @@
         "ext-dom": "*",
         "ext-iconv": "*",
         "ext-simplexml": "*",
+        "symfony/apache-pack": "^1.0",
         "symfony/cache": "5.3.*",
         "symfony/console": "5.3.*",
         "symfony/css-selector": "5.3.*",

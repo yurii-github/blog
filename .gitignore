@@ -11,6 +11,7 @@
 /public/images/
 /public/proof/
 /tests/_data/tmp
+/web
 
 ###> symfony/framework-bundle ###
 /.env.local
