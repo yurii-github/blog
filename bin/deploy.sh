@@ -3,5 +3,5 @@
 #
 #
 #
-git pull -f
-composer install --no-dev --no-scripts --optimize-autoloader
+git pull
+composer install --no-dev --optimize-autoloader
