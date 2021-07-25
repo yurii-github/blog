@@ -39,3 +39,6 @@ services:
             $sitemap_filename: '%kernel.project_dir%/public/sitemap.xml'
             $logsDir: '%kernel.project_dir%/logs'
             $requestStack: '@request_stack'
+    cache.adapter.null:
+        class: Symfony\Component\Cache\Adapter\NullAdapter
+        arguments: [~]
