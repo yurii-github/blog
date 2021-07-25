@@ -9,16 +9,14 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Sitemap
 {
-    protected $sitemap_filename;
-    protected $request_stack;
+    protected $sitemapFilename;
     protected $logsDir;
-    protected $logger;
     protected $requestStack;
 
 
-    public function __construct(string $sitemap_filename, string $logsDir, RequestStack $requestStack)
+    public function __construct(string $sitemapFilename, string $logsDir, RequestStack $requestStack)
     {
-        $this->sitemap_filename = $sitemap_filename;
+        $this->sitemapFilename = $sitemapFilename;
         $this->logsDir = $logsDir;
         $this->requestStack = $requestStack;
     }
@@ -26,11 +24,11 @@ class Sitemap
 
     public function flush($force = false)
     {
-        if (file_exists($this->sitemap_filename) && !$force) {
+        if (file_exists($this->sitemapFilename) && !$force) {
             return;
         }
 
-        $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
+        $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
 
         foreach (new \DirectoryIterator($this->logsDir) as $fi) {
             if ($fi->isFile()) {
@@ -50,20 +48,20 @@ class Sitemap
             }
         }
 
-        // write generated sitemap (http://www.sitemaps.org/protocol.html)
+        // write generated sitemap (https://www.sitemaps.org/protocol.html)
         $dom = dom_import_simplexml($xml)->ownerDocument;
         $dom->formatOutput = true;
-        file_put_contents($this->sitemap_filename, $dom->saveXML());
+        file_put_contents($this->sitemapFilename, $dom->saveXML());
     }
 
 
-    public function getSitemapFilename()
+    public function getSitemapFilename(): string
     {
-        return $this->sitemap_filename;
+        return $this->sitemapFilename;
     }
 
 
-    public function loadLog($filename)
+    public function loadLog($filename): Log
     {
         $raw = file_get_contents($filename);
         $raw = str_replace("\r", '', $raw); //fix windows-like
@@ -81,13 +79,13 @@ class Sitemap
     }
 
 
-    public function getLogs()
+    public function getLogs(): array
     {
-        if (!file_exists($this->sitemap_filename)) {
+        if (!file_exists($this->sitemapFilename)) {
             $this->flush();
         }
 
-        $xml = simplexml_load_string(file_get_contents($this->sitemap_filename));
+        $xml = simplexml_load_string(file_get_contents($this->sitemapFilename));
         $logs = [];
 
         foreach ($xml as $child) {

@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @covers \App\Controller\DefaultController::index
+ * @uses \App\Kernel
  * @uses \App\Log
  * @uses \App\Sitemap
  * @uses \App\Twig\TwigExtension::inlineFilter

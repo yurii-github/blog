@@ -22,7 +22,6 @@ class SitemapTest extends TestCase
      * @var \App\Sitemap
      */
     protected $sitemap;
-
     protected $testLogFilename = TESTDIR.'/_data/logs/2000-01-01_a-b-c.txt';
     protected $testLogSitemap = <<<SITEMAP
 <?xml version="1.0" encoding="UTF-8"?>
@@ -37,19 +36,15 @@ class SitemapTest extends TestCase
 
 SITEMAP;
 
+    
     public static function setUpBeforeClass(): void
     {
         if (!is_dir(TESTDIR.'/_data/tmp')) {
-            // dir doesn't exist, make it
             mkdir(TESTDIR.'/_data/tmp');
         }
     }
 
-    public static function tearDownAfterClass(): void
-    {
-        @unlink(TESTDIR.'/_data/tmp');
-    }
-
+    
     protected function setUp(): void
     {
         $this->requestStack = $this->getMockBuilder('\Symfony\Component\HttpFoundation\RequestStack')
