@@ -109,11 +109,4 @@ SITEMAP;
         $this->sitemap->getLogByLoc($loc);
     }
 
-    public function testLoadLog()
-    {
-        $log = $this->sitemap->loadLog($this->testLogFilename);
-        $this->assertEquals('a b c', $log->title);
-        $this->assertEquals("line 1\nline 2", $log->content);
-        $this->assertEquals(\DateTime::createFromFormat('Y-m-d', '2000-01-01'), $log->date);
-    }
 }

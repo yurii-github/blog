@@ -40,11 +40,11 @@ class DefaultController extends AbstractController
 
     public function sitemap(Sitemap $sitemap, CacheInterface $cache, $purge): BinaryFileResponse
     {
-        if (!file_exists($sitemap->getSitemapFilename()) || 'purge' == $purge) {
+        if (!$sitemap->exists() || 'purge' == $purge) {
             $sitemap->flush();
             $cache->delete(self::CACHE_PAGE_INDEX);
         }
 
-        return new BinaryFileResponse($sitemap->getSitemapFilename());
+        return new BinaryFileResponse($sitemap->getFilename());
     }
 }
