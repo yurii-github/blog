@@ -1,4 +1,9 @@
 
+Purge config
+```
+https://localhost/sitemap.xml/purge
+```
+
 Serve with Symfony CLI
 ```
 symfony-cli serve
